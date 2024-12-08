@@ -1,3 +1,4 @@
+import { setSeed, array as mfArray } from 'minifaker';
 import type {
 	IExecuteFunctions,
 	INodeExecutionData,
@@ -10,7 +11,8 @@ import {
 	NodeConnectionType,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { setSeed, array as mfArray } from 'minifaker';
+
+import { generateGarbageMemory, runGarbageCollector } from './functions';
 import {
 	generateCreditCard,
 	generateIPv4,
@@ -24,8 +26,8 @@ import {
 	generateURL,
 	generateUUID,
 	generateVersion,
+	generateText,
 } from './randomData';
-import { generateGarbageMemory, runGarbageCollector } from './functions';
 
 export class DebugHelper implements INodeType {
 	description: INodeTypeDescription = {
@@ -161,6 +163,10 @@ export class DebugHelper implements INodeType {
 						value: 'nanoid',
 					},
 					{
+						name: 'Text',
+						value: 'text',
+					},
+					{
 						name: 'URL',
 						value: 'url',
 					},
@@ -207,6 +213,43 @@ export class DebugHelper implements INodeType {
 					show: {
 						category: ['randomData'],
 						randomDataType: ['nanoid'],
+					},
+				},
+			},
+			{
+				displayName: 'Text Unit',
+				name: 'textType',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'Words',
+						value: 'words',
+						description: 'Generates Lorem ipsum lowercase words',
+					},
+					{
+						name: 'Sentences',
+						value: 'sentences',
+						description: 'Generates Lorem ipsum title case sentences',
+					},
+					{
+						name: 'Paragraphs',
+						value: 'paragraphs',
+						description: 'Generates Lorem ipsum paragraphs',
+					},
+				],
+				default: 'words',
+			},
+			{
+				displayName: 'Unit Length',
+				name: 'textLength',
+				type: 'number',
+				default: 10,
+				description: 'The number of words/sentences or paragraphs to generate',
+				displayOptions: {
+					show: {
+						category: ['randomData'],
+						randomDataType: ['text'],
 					},
 				},
 			},
@@ -338,6 +381,11 @@ export class DebugHelper implements INodeType {
 								break;
 							case 'url':
 								randomFn = generateURL;
+								break;
+							case 'text':
+								const textType = this.getNodeParameter('textType', 0) as string;
+								const textLength = this.getNodeParameter('textLength', 0) as number;
+								randomFn = () => generateText(textType, textLength);
 								break;
 							case 'nanoid':
 								const nanoidAlphabet = this.getNodeParameter('nanoidAlphabet', 0) as string;

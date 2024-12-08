@@ -1,3 +1,4 @@
+import { LoremIpsum } from 'lorem-ipsum';
 import {
 	firstName,
 	lastName,
@@ -78,6 +79,30 @@ export function generateCreditCard() {
 
 export function generateURL() {
 	return { url: domainUrl() };
+}
+
+export function generateText(textType: string, generationLength: number) {
+	const lorem = new LoremIpsum({
+		sentencesPerParagraph: {
+			max: 8,
+			min: 4,
+		},
+		wordsPerSentence: {
+			max: 15,
+			min: 8,
+		},
+	});
+	switch (textType) {
+		case 'words':
+			return { text: lorem.generateWords(generationLength) };
+			break;
+		case 'sentences':
+			return { text: lorem.generateSentences(generationLength) };
+			break;
+		default:
+			return { text: lorem.generateParagraphs(generationLength) };
+			break;
+	}
 }
 
 export function generateIPv4() {
