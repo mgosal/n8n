@@ -81,7 +81,7 @@ export function generateURL() {
 	return { url: domainUrl() };
 }
 
-export function generateText(textType: string, generationLength: number) {
+export function generateText(randomSeed: string, textType: string, generationLength: number) {
 	const lorem = new LoremIpsum({
 		sentencesPerParagraph: {
 			max: 8,
@@ -91,6 +91,7 @@ export function generateText(textType: string, generationLength: number) {
 			max: 15,
 			min: 8,
 		},
+		seed: randomSeed,
 	});
 	switch (textType) {
 		case 'words':

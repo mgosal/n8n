@@ -385,7 +385,7 @@ export class DebugHelper implements INodeType {
 							case 'text':
 								const textType = this.getNodeParameter('textType', 0) as string;
 								const textLength = this.getNodeParameter('textLength', 0) as number;
-								randomFn = () => generateText(textType, textLength);
+								randomFn = () => generateText(randomDataSeed, textType, textLength);
 								break;
 							case 'nanoid':
 								const nanoidAlphabet = this.getNodeParameter('nanoidAlphabet', 0) as string;
